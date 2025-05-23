@@ -81,3 +81,4 @@ C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\obj\Debug
 C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\obj\Debug\net9.0\LeaveAPI.pdb
 C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\obj\Debug\net9.0\LeaveAPI.genruntimeconfig.cache
 C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\obj\Debug\net9.0\ref\LeaveAPI.dll
+C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\obj\Debug\net9.0\LeaveAPI.sourcelink.json

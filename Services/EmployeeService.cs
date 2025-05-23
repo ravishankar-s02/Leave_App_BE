@@ -9,10 +9,12 @@ using LeaveAPI.Services;
 
 namespace LeaveAPI.Services
 {
-    public class EmployeeService(IConfiguration config) : IEmployeeService {
+    public class EmployeeService(IConfiguration config) : IEmployeeService
+    {
         private readonly string _connectionString = config.GetConnectionString("DefaultConnection");
 
-        public async Task<string> Register(Employee emp) {
+        public async Task<string> Register(Employee emp)
+        {
             using var con = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand("sp_RegisterEmployee", con);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -20,37 +22,46 @@ namespace LeaveAPI.Services
             cmd.Parameters.AddWithValue("@Name", emp.Name);
             cmd.Parameters.AddWithValue("@Email", emp.Email);
             cmd.Parameters.AddWithValue("@Password", emp.Password);
+            cmd.Parameters.AddWithValue("@Role", emp.Role);
 
-            try {
+            try
+            {
                 await con.OpenAsync();
                 await cmd.ExecuteNonQueryAsync();
                 return "Registered successfully.";
-            } catch (SqlException ex) {
+            }
+            catch (SqlException ex)
+            {
                 return ex.Message;
             }
         }
 
-        public async Task<Employee> Login(LoginRequest login) {
+        public async Task<Employee> Login(LoginRequest login)
+        {
             using var con = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand("sp_LoginEmployee", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.AddWithValue("@Email", login.Email);
+            cmd.Parameters.AddWithValue("@Name", login.Name);
             cmd.Parameters.AddWithValue("@Password", login.Password);
 
             await con.OpenAsync();
             using var reader = await cmd.ExecuteReaderAsync();
-            if (await reader.ReadAsync()) {
-                return new Employee {
+            if (await reader.ReadAsync())
+            {
+                return new Employee
+                {
                     EmployeeId = (int)reader["EmployeeId"],
                     Name = reader["Name"].ToString(),
-                    Email = reader["Email"].ToString()
+                    Email = reader["Email"].ToString(),
+                    Role = reader["Role"].ToString()
                 };
             }
             return null;
         }
 
-        public async Task<string> ApplyLeave(ApplyLeaves leave) {
+        public async Task<string> ApplyLeave(ApplyLeaves leave)
+        {
             using var con = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand("sp_ApplyLeave", con);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -61,16 +72,20 @@ namespace LeaveAPI.Services
             cmd.Parameters.AddWithValue("@EndDate", leave.EndDate);
             cmd.Parameters.AddWithValue("@Reason", leave.Reason);
 
-            try {
+            try
+            {
                 await con.OpenAsync();
                 await cmd.ExecuteNonQueryAsync();
                 return "Leave applied successfully";
-            } catch (SqlException ex) {
+            }
+            catch (SqlException ex)
+            {
                 return ex.Message;
             }
         }
 
-        public async Task<List<LeaveApplication>> GetLeavesByEmployee(int empId) {
+        public async Task<List<LeaveApplication>> GetLeavesByEmployee(int empId)
+        {
             var list = new List<LeaveApplication>();
             using var con = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand("sp_GetLeavesByEmployee", con);
@@ -79,29 +94,8 @@ namespace LeaveAPI.Services
 
             await con.OpenAsync();
             using var reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
-                list.Add(new LeaveApplication {
-                    StartDate = (DateTime)reader["StartDate"],
-                    EndDate = (DateTime)reader["EndDate"],
-                    Reason = reader["Reason"].ToString(),
-                    EmployeeId = (int)reader["EmployeeId"],
-                    LeaveTypeId = (int)reader["LeaveTypeId"],
-                    TypeName = reader["TypeName"].ToString(),
-                    Status = reader["Status"].ToString()
-                });
-            }
-            return list;
-        }
-
-        public async Task<List<LeaveApplication>> GetAllLeaves() {
-            var list = new List<LeaveApplication>();
-            using var con = new SqlConnection(_connectionString);
-            using var cmd = new SqlCommand("sp_GetAllLeaveApplications", con);
-            cmd.CommandType = CommandType.StoredProcedure;
-
-            await con.OpenAsync();
-            using var reader = await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync()) {
+            while (await reader.ReadAsync())
+            {
                 list.Add(new LeaveApplication
                 {
                     StartDate = (DateTime)reader["StartDate"],
@@ -116,7 +110,36 @@ namespace LeaveAPI.Services
             return list;
         }
 
-        public async Task<string> UpdateLeaveStatus(int leaveId, string status) {
+        public async Task<List<LeaveApplication>> GetAllLeaves()
+        {
+            var list = new List<LeaveApplication>();
+            using var con = new SqlConnection(_connectionString);
+            using var cmd = new SqlCommand("sp_GetAllLeaveApplications", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            await con.OpenAsync();
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
+            {
+                list.Add(new LeaveApplication
+                {
+                    StartDate = (DateTime)reader["StartDate"],
+                    EndDate = (DateTime)reader["EndDate"],
+                    Reason = reader["Reason"].ToString(),
+                    EmployeeId = (int)reader["EmployeeId"],
+                    LeaveTypeId = (int)reader["LeaveTypeId"],
+                    TypeName = reader["TypeName"].ToString(),
+                    Status = reader["Status"].ToString(),
+                    Name = reader["Name"].ToString(),
+                    AppliedOn = (DateTime)reader["AppliedOn"],
+                    LeaveId = (int)reader["LeaveId"]
+                });
+            }
+            return list;
+        }
+
+        public async Task<string> UpdateLeaveStatus(int leaveId, string status)
+        {
             using var con = new SqlConnection(_connectionString);
             using var cmd = new SqlCommand("sp_UpdateLeaveStatus", con);
             cmd.CommandType = CommandType.StoredProcedure;
@@ -138,5 +161,7 @@ namespace LeaveAPI.Services
         {
             throw new NotImplementedException();
         }
+        
+        
     }
 }

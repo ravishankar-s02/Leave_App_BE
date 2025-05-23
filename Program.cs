@@ -11,8 +11,9 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "LeaveAPI", Version = "v1" });
 });
 
-// Register your custom service
+// Register your custom services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IPersonalDetailsService, PersonalDetailsService>(); // ✅ Add this line
 
 // ✅ Add CORS service
 builder.Services.AddCors(options =>

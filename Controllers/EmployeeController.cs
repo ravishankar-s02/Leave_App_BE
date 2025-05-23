@@ -21,9 +21,24 @@ namespace LeaveAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest login) {
+        public async Task<IActionResult> Login(LoginRequest login)
+        {
             var user = await _service.Login(login);
-            return user != null ? Ok(user) : Unauthorized("Invalid credentials");   
+
+            if (user != null)
+            {
+                // Return only necessary fields (e.g., excluding password)
+                return Ok(new
+                {
+                    employeeId = user.EmployeeId,
+                    name = user.Name,
+                    email = user.Email,
+                    role = user.Role
+                });
+            }
+
+            return Unauthorized("Invalid credentials");
         }
+
     }
 }

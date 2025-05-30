@@ -14,5 +14,6 @@ namespace LeaveAPI.Services
         Task<List<LeaveApplication>> GetLeavesByEmployee(int empId);
         Task<List<LeaveApplication>> GetAllLeaves();
         Task<string> UpdateLeaveStatus(int LeaveId, string status);
+        List<Employee> GetAllEmployees();
     }
 }

@@ -14,6 +14,8 @@ builder.Services.AddSwaggerGen(c =>
 // Register your custom services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IPersonalDetailsService, PersonalDetailsService>(); // ✅ Add this line
+builder.Services.AddScoped<IContactDetailsService, ContactDetailsService>();
+
 
 // ✅ Add CORS service
 builder.Services.AddCors(options =>

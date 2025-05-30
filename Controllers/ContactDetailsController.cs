@@ -5,21 +5,21 @@ using LeaveAPI.Services;
 namespace LeaveAPI.Controllers
 {
     [ApiController]
-    [Route("api/personal-details")]
-    public class PersonalDetailsController : ControllerBase
+    [Route("api/contact-details")]
+    public class ContactDetailsController : ControllerBase
     {
-        private readonly IPersonalDetailsService _service;
+        private readonly IContactDetailsService _service;
 
-        public PersonalDetailsController(IPersonalDetailsService service)
+        public ContactDetailsController(IContactDetailsService service)
         {
             _service = service;
         }
 
-        // ✅ Save personal details
+        // ✅ Save contact details
         [HttpPost("save")]
-        public async Task<IActionResult> SavePersonalDetails([FromBody] PersonalDetails details)
+        public async Task<IActionResult> SaveContactDetails([FromBody] ContactDetails details)
         {
-            var result = await _service.SavePersonalDetails(details);
+            var result = await _service.SaveContactDetails(details);
 
             if (result)
             {
@@ -33,14 +33,13 @@ namespace LeaveAPI.Controllers
             }
         }
 
-
-        // ✅ Get personal details by employee ID
+        // ✅ Get contact details by employee ID
         [HttpGet("{employeeId}")]
-        public async Task<IActionResult> GetPersonalDetails(int employeeId)
+        public async Task<IActionResult> GetContactDetails(int employeeId)
         {
-            var details = await _service.GetPersonalDetails(employeeId);
+            var details = await _service.GetContactDetails(employeeId);
             if (details == null)
-                return NotFound("No personal details found.");
+                return NotFound("No contact details found.");
 
             return Ok(details);
         }

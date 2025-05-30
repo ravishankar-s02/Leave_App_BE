@@ -22,8 +22,7 @@ public class PersonalDetailsService : IPersonalDetailsService
             {
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddWithValue("@EmployeeId", details.EmployeeId);
-                cmd.Parameters.AddWithValue("@FirstName", details.FirstName);
-                cmd.Parameters.AddWithValue("@LastName", details.LastName);
+                cmd.Parameters.AddWithValue("@Name", details.Name);
                 cmd.Parameters.AddWithValue("@DOB", details.DOB);
                 cmd.Parameters.AddWithValue("@Gender", details.Gender);
                 cmd.Parameters.AddWithValue("@Email", details.Email);
@@ -53,8 +52,7 @@ public class PersonalDetailsService : IPersonalDetailsService
                         return new PersonalDetails
                         {
                             EmployeeId = (int)reader["EmployeeId"],
-                            FirstName = reader["FirstName"]?.ToString(),
-                            LastName = reader["LastName"]?.ToString(),
+                            Name = reader["Name"]?.ToString(),
                             DOB = (DateTime)reader["DOB"],
                             Gender = reader["Gender"]?.ToString(),
                             Email = reader["Email"]?.ToString(),

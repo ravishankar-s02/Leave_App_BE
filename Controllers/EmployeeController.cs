@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using LeaveAPI.Controllers;
 using LeaveAPI.Models;
 using LeaveAPI.Services;
 
@@ -7,27 +6,38 @@ namespace LeaveAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class EmployeeController:ControllerBase {
-        private readonly IEmployeeService _service;
+    public class EmployeeController : ControllerBase
+    {
+        // Use one private field only
+        private readonly IEmployeeService _employeeService;
 
-        public EmployeeController(IEmployeeService service) {
-            _service = service;
+        // Single constructor
+        public EmployeeController(IEmployeeService employeeService)
+        {
+            _employeeService = employeeService;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(Employee emp) {
-            var result = await _service.Register(emp);
+        public async Task<IActionResult> Register(Employee emp)
+        {
+            var result = await _employeeService.Register(emp);
             return Ok(result);
+        }
+
+        [HttpGet]
+        public IActionResult GetAllEmployees()
+        {
+            var employees = _employeeService.GetAllEmployees();
+            return Ok(employees);
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest login)
         {
-            var user = await _service.Login(login);
+            var user = await _employeeService.Login(login);
 
             if (user != null)
             {
-                // Return only necessary fields (e.g., excluding password)
                 return Ok(new
                 {
                     employeeId = user.EmployeeId,
@@ -39,6 +49,5 @@ namespace LeaveAPI.Controllers
 
             return Unauthorized("Invalid credentials");
         }
-
     }
 }

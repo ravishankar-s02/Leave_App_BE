@@ -32,7 +32,12 @@ namespace LeaveAPI.Services
             }
             catch (SqlException ex)
             {
-                return ex.Message;
+                if (ex.Number == 50000) // Matches RAISERROR in stored proc
+                {
+                    return ex.Message; // Returns: "Email already exists."
+                }
+
+                return "Database error: " + ex.Message;
             }
         }
 
@@ -66,7 +71,7 @@ namespace LeaveAPI.Services
             using var cmd = new SqlCommand("sp_ApplyLeave", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.AddWithValue("@LeaveTypeId", leave.LeaveTypeId);
+            cmd.Parameters.AddWithValue("@TypeName", leave.TypeName);
             cmd.Parameters.AddWithValue("@EmployeeId", leave.EmployeeId);
             cmd.Parameters.AddWithValue("@StartDate", leave.StartDate);
             cmd.Parameters.AddWithValue("@EndDate", leave.EndDate);
@@ -161,6 +166,33 @@ namespace LeaveAPI.Services
         {
             throw new NotImplementedException();
         }
+
+        public List<Employee> GetAllEmployees()
+    {
+        var employees = new List<Employee>();
+
+        using (SqlConnection conn = new SqlConnection(_connectionString))
+        {
+            SqlCommand cmd = new SqlCommand("GetAllEmployees", conn); // or SELECT * FROM Employees
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            conn.Open();
+            using (SqlDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    employees.Add(new Employee
+                    {
+                        EmployeeId = Convert.ToInt32(reader["EmployeeId"]),
+                        Name = reader["Name"].ToString()
+                        // Add more fields if needed
+                    });
+                }
+            }
+        }
+
+        return employees;
+    }
         
         
     }

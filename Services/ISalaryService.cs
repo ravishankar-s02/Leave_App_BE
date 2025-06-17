@@ -3,6 +3,6 @@ using System.Threading.Tasks;
 
 public interface ISalaryService
 {
-    Task<Salary?> GetSalary(int employeeId);  // ✅ fixed
+    Task<Salary?> GetSalary(int employeeId); 
     Task<bool> SaveSalary(Salary details);
 }

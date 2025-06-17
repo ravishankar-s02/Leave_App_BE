@@ -60,6 +60,6 @@ public class SalaryService : ISalaryService
             }
         }
 
-        return null; // not found
+        return null; 
     }
 }

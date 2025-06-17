@@ -3,6 +3,6 @@ using System.Threading.Tasks;
 
 public interface IPersonalDetailsService
 {
-    Task<PersonalDetails?> GetPersonalDetails(int employeeId);  // ✅ fixed
+    Task<PersonalDetails?> GetPersonalDetails(int employeeId); 
     Task<bool> SavePersonalDetails(PersonalDetails details);
 }

@@ -23,17 +23,14 @@ namespace LeaveAPI.Controllers
 
             if (result)
             {
-                // Return a well-formed JSON response with a 200 status
                 return Ok(new { message = "Saved successfully" });
             }
             else
             {
-                // Return a clear error message with a 500 status
                 return StatusCode(500, new { message = "Error saving details" });
             }
         }
 
-        // ✅ Get contact details by employee ID
         [HttpGet("{employeeId}")]
         public async Task<IActionResult> GetContactDetails(int employeeId)
         {

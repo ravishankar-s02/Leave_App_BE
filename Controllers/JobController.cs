@@ -15,7 +15,6 @@ namespace LeaveAPI.Controllers
             _service = service;
         }
 
-        // ✅ Save contact details
         [HttpPost("save")]
         public async Task<IActionResult> SaveJob([FromBody] Job details)
         {
@@ -23,23 +22,20 @@ namespace LeaveAPI.Controllers
 
             if (result)
             {
-                // Return a well-formed JSON response with a 200 status
                 return Ok(new { message = "Saved successfully" });
             }
             else
             {
-                // Return a clear error message with a 500 status
                 return StatusCode(500, new { message = "Error saving details" });
             }
         }
 
-        // ✅ Get contact details by employee ID
         [HttpGet("{employeeId}")]
         public async Task<IActionResult> GetJob(int employeeId)
         {
             var details = await _service.GetJob(employeeId);
             if (details == null)
-                return Ok("No contact details found.");
+                return Ok("No job details found.");
 
             return Ok(details);
         }

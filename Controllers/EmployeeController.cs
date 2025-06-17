@@ -15,7 +15,6 @@ namespace LeaveAPI.Controllers
             _employeeService = employeeService;
         }
 
-        // POST: api/Employee/register
         [HttpPost("register")]
         public async Task<IActionResult> Register(Employee emp)
         {
@@ -23,7 +22,6 @@ namespace LeaveAPI.Controllers
             return Ok(result);
         }
 
-        // POST: api/Employee/login
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest login)
         {
@@ -43,7 +41,6 @@ namespace LeaveAPI.Controllers
             return Unauthorized("Invalid credentials");
         }
 
-        // ✅ GET: api/Employee/all — used by Angular to list all employees
         [HttpGet("all")]
         public async Task<IActionResult> GetAllEmployees()
         {

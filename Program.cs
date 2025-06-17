@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen(c =>
 
 // Register your custom services
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
-builder.Services.AddScoped<IPersonalDetailsService, PersonalDetailsService>(); // ✅ Add this line
+builder.Services.AddScoped<IPersonalDetailsService, PersonalDetailsService>(); 
 builder.Services.AddScoped<IContactDetailsService, ContactDetailsService>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<ISalaryService, SalaryService>();

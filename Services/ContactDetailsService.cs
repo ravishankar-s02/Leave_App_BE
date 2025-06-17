@@ -68,6 +68,6 @@ public class ContactDetailsService : IContactDetailsService
             }
         }
 
-        return null; // not found
+        return null;
     }
 }

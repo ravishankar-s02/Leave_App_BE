@@ -39,7 +39,7 @@ namespace LeaveAPI.Controllers
         {
             var details = await _service.GetContactDetails(employeeId);
             if (details == null)
-                return NotFound("No contact details found.");
+                return Ok("No contact details found.");
 
             return Ok(details);
         }

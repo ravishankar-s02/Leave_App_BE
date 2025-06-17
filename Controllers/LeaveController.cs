@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using LeaveAPI.Models;
 using LeaveAPI.Services;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using Microsoft.Extensions.Configuration;
 
 namespace LeaveAPI.Controllers
 {
@@ -9,10 +12,12 @@ namespace LeaveAPI.Controllers
     public class LeaveController : ControllerBase
     {
         private readonly IEmployeeService _service;
+        private readonly IConfiguration _configuration;
 
-        public LeaveController(IEmployeeService service)
+        public LeaveController(IEmployeeService service, IConfiguration configuration)
         {
             _service = service;
+            _configuration = configuration;
         }
 
         [HttpPost("apply")]
@@ -20,8 +25,7 @@ namespace LeaveAPI.Controllers
         {
             try
             {
-                var result = await _service.ApplyLeave(leave); // assume returns string message
-
+                var result = await _service.ApplyLeave(leave);
                 if (result == "Leave applied successfully")
                     return Ok(new { message = result });
 
@@ -33,6 +37,22 @@ namespace LeaveAPI.Controllers
             }
         }
 
+        [HttpDelete("cancel/{leaveId}")]
+        public async Task<IActionResult> CancelLeave(int leaveId)
+        {
+            try
+            {
+                var result = await _service.CancelLeave(leaveId);
+                if (result == "Leave cancelled")
+                    return Ok(new { message = result });
+
+                return BadRequest(new { message = result });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
+            }
+        }
 
         [HttpGet("employee/{id}")]
         public async Task<IActionResult> GetLeavesByEmployee(int id)
@@ -48,23 +68,30 @@ namespace LeaveAPI.Controllers
             return Ok(leaves);
         }
 
+        // ✅ Unified PUT endpoint that executes the stored procedure directly
         [HttpPut("status")]
-        public async Task<IActionResult> UpdateStatus([FromQuery] int leaveId, [FromQuery] string status)
+        public IActionResult UpdateStatus([FromQuery] int leaveId, [FromQuery] string status)
         {
             try
             {
-                var result = await _service.UpdateLeaveStatus(leaveId, status); // result is string
+                using (SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection")))
+                {
+                    SqlCommand cmd = new SqlCommand("sp_UpdateLeaveStatus", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@LeaveID", leaveId);
+                    cmd.Parameters.AddWithValue("@Status", status);
 
-                if (result == "Status updated successfully")
-                    return Ok(new { message = result });
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                }
 
-                return BadRequest(new { message = result });
+                return Ok(new { message = "Leave status updated successfully." });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Internal Server Error", error = ex.Message });
             }
         }
-
     }
+
 }

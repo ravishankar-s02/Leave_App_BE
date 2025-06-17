@@ -82,3 +82,9 @@ C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\obj\Debug
 C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\obj\Debug\net9.0\LeaveAPI.genruntimeconfig.cache
 C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\obj\Debug\net9.0\ref\LeaveAPI.dll
 C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\obj\Debug\net9.0\LeaveAPI.sourcelink.json
+C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\bin\Debug\net9.0\System.Data.SqlClient.dll
+C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\bin\Debug\net9.0\runtimes\win-arm64\native\sni.dll
+C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\bin\Debug\net9.0\runtimes\win-x64\native\sni.dll
+C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\bin\Debug\net9.0\runtimes\win-x86\native\sni.dll
+C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\bin\Debug\net9.0\runtimes\unix\lib\net8.0\System.Data.SqlClient.dll
+C:\Users\rsivakumar\Documents\Simple_Solve\Leave_App\Back_End\LeaveAPI\bin\Debug\net9.0\runtimes\win\lib\net8.0\System.Data.SqlClient.dll

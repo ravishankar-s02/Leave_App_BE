@@ -8,15 +8,14 @@ namespace LeaveAPI.Controllers
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
-        // Use one private field only
         private readonly IEmployeeService _employeeService;
 
-        // Single constructor
         public EmployeeController(IEmployeeService employeeService)
         {
             _employeeService = employeeService;
         }
 
+        // POST: api/Employee/register
         [HttpPost("register")]
         public async Task<IActionResult> Register(Employee emp)
         {
@@ -24,13 +23,7 @@ namespace LeaveAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
-        public IActionResult GetAllEmployees()
-        {
-            var employees = _employeeService.GetAllEmployees();
-            return Ok(employees);
-        }
-
+        // POST: api/Employee/login
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginRequest login)
         {
@@ -41,13 +34,21 @@ namespace LeaveAPI.Controllers
                 return Ok(new
                 {
                     employeeId = user.EmployeeId,
-                    name = user.Name,
+                    firstName = user.FirstName,
                     email = user.Email,
                     role = user.Role
                 });
             }
 
             return Unauthorized("Invalid credentials");
+        }
+
+        // ✅ GET: api/Employee/all — used by Angular to list all employees
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllEmployees()
+        {
+            var employees = await _employeeService.GetAllEmployeesAsync();
+            return Ok(employees);
         }
     }
 }

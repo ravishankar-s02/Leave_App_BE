@@ -5,13 +5,17 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using LeaveAPI.Models;
-using LeaveAPI.Services;
 
 namespace LeaveAPI.Services
 {
-    public class EmployeeService(IConfiguration config) : IEmployeeService
+    public class EmployeeService : IEmployeeService
     {
-        private readonly string _connectionString = config.GetConnectionString("DefaultConnection");
+        private readonly string _connectionString;
+
+        public EmployeeService(IConfiguration config)
+        {
+            _connectionString = config.GetConnectionString("DefaultConnection");
+        }
 
         public async Task<string> Register(Employee emp)
         {
@@ -19,7 +23,9 @@ namespace LeaveAPI.Services
             using var cmd = new SqlCommand("sp_RegisterEmployee", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.AddWithValue("@Name", emp.Name);
+            cmd.Parameters.AddWithValue("@FirstName", emp.FirstName);
+            cmd.Parameters.AddWithValue("@MiddleName", emp.MiddleName);
+            cmd.Parameters.AddWithValue("@LastName", emp.LastName);
             cmd.Parameters.AddWithValue("@Email", emp.Email);
             cmd.Parameters.AddWithValue("@Password", emp.Password);
             cmd.Parameters.AddWithValue("@Role", emp.Role);
@@ -32,10 +38,8 @@ namespace LeaveAPI.Services
             }
             catch (SqlException ex)
             {
-                if (ex.Number == 50000) // Matches RAISERROR in stored proc
-                {
-                    return ex.Message; // Returns: "Email already exists."
-                }
+                if (ex.Number == 50000) // custom error
+                    return ex.Message;
 
                 return "Database error: " + ex.Message;
             }
@@ -47,7 +51,7 @@ namespace LeaveAPI.Services
             using var cmd = new SqlCommand("sp_LoginEmployee", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            cmd.Parameters.AddWithValue("@Name", login.Name);
+            cmd.Parameters.AddWithValue("@FirstName", login.FirstName);
             cmd.Parameters.AddWithValue("@Password", login.Password);
 
             await con.OpenAsync();
@@ -57,11 +61,12 @@ namespace LeaveAPI.Services
                 return new Employee
                 {
                     EmployeeId = (int)reader["EmployeeId"],
-                    Name = reader["Name"].ToString(),
+                    FirstName = reader["FirstName"].ToString(),
                     Email = reader["Email"].ToString(),
                     Role = reader["Role"].ToString()
                 };
             }
+
             return null;
         }
 
@@ -81,13 +86,26 @@ namespace LeaveAPI.Services
             {
                 await con.OpenAsync();
                 await cmd.ExecuteNonQueryAsync();
-                return "Leave applied successfully";
+                return "Leave applied successfully.";
             }
             catch (SqlException ex)
             {
-                return ex.Message;
+                return "Database error: " + ex.Message;
             }
         }
+
+        public async Task<string> CancelLeave(int leaveId)
+        {
+            using var con = new SqlConnection(_connectionString);
+            using var cmd = new SqlCommand("sp_CancelLeave", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+            cmd.Parameters.AddWithValue("@LeaveId", leaveId);
+
+            await con.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+            return "Leave cancelled";
+        }
+
 
         public async Task<List<LeaveApplication>> GetLeavesByEmployee(int empId)
         {
@@ -135,7 +153,7 @@ namespace LeaveAPI.Services
                     LeaveTypeId = (int)reader["LeaveTypeId"],
                     TypeName = reader["TypeName"].ToString(),
                     Status = reader["Status"].ToString(),
-                    Name = reader["Name"].ToString(),
+                    FirstName = reader["FirstName"].ToString(),
                     AppliedOn = (DateTime)reader["AppliedOn"],
                     LeaveId = (int)reader["LeaveId"]
                 });
@@ -157,43 +175,26 @@ namespace LeaveAPI.Services
             return "Leave status updated.";
         }
 
-        public Task<string> ApplyLeave(LeaveApplication leave)
+        public async Task<IEnumerable<Employee>> GetAllEmployeesAsync()
         {
-            throw new NotImplementedException();
-        }
+            var employees = new List<Employee>();
 
-        public Task<string> ApplyLeave(object leaves)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<Employee> GetAllEmployees()
-    {
-        var employees = new List<Employee>();
-
-        using (SqlConnection conn = new SqlConnection(_connectionString))
-        {
-            SqlCommand cmd = new SqlCommand("GetAllEmployees", conn); // or SELECT * FROM Employees
+            using var con = new SqlConnection(_connectionString);
+            using var cmd = new SqlCommand("GetAllEmployees", con);
             cmd.CommandType = CommandType.StoredProcedure;
 
-            conn.Open();
-            using (SqlDataReader reader = cmd.ExecuteReader())
+            await con.OpenAsync();
+            using var reader = await cmd.ExecuteReaderAsync();
+            while (await reader.ReadAsync())
             {
-                while (reader.Read())
+                employees.Add(new Employee
                 {
-                    employees.Add(new Employee
-                    {
-                        EmployeeId = Convert.ToInt32(reader["EmployeeId"]),
-                        Name = reader["Name"].ToString()
-                        // Add more fields if needed
-                    });
-                }
+                    EmployeeId = Convert.ToInt32(reader["EmployeeId"]),
+                    FirstName = reader["FirstName"].ToString()
+                });
             }
-        }
 
-        return employees;
-    }
-        
-        
+            return employees;
+        }
     }
 }

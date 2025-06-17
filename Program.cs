@@ -15,6 +15,10 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<IPersonalDetailsService, PersonalDetailsService>(); // ✅ Add this line
 builder.Services.AddScoped<IContactDetailsService, ContactDetailsService>();
+builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<ISalaryService, SalaryService>();
+builder.Services.AddScoped<ILeaveSummaryService, LeaveSummaryService>();
+builder.Services.AddHostedService<LeaveProcessingBackgroundService>();
 
 
 // ✅ Add CORS service

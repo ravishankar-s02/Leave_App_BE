@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LeaveAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6021ce738fcff9840f753e3122f5e92bb1b424e5")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ca60166e42beea47ae8b9a2a6c30fdd44ce3f8c")]
 [assembly: System.Reflection.AssemblyProductAttribute("LeaveAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LeaveAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
